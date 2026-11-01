@@ -1,0 +1,20 @@
+{
+  "name": "cdk",
+  "private": true,
+  "scripts": {
+    "cdk": "cdk"
+  },
+  "dependencies": {
+    "@aws-sdk/client-connect": "^3.900.0",
+    "aws-cdk-lib": "2.273.0",
+    "constructs": "^10.8.1"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.150",
+    "@types/node": "^26.6.5",
+    "aws-cdk": "^2.1145.0",
+    "esbuild": "^0.25.0",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}
