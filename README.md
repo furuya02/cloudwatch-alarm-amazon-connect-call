@@ -37,7 +37,7 @@ Sample code that places a phone call from Amazon Connect to mobile phones when a
 ├── scripts/
 │   ├── alarm.sh            # send the test metric to trigger ALARM
 │   ├── status.sh           # show alarm state and Lambda logs
-│   └── contacts.sh         # list recent calls with connected seconds (the billable part)
+│   └── contacts.sh         # list recent calls with the billable seconds (TOTAL and TALK)
 └── docs/architecture.png
 ```
 
@@ -125,13 +125,13 @@ Within about a minute the alarm goes into ALARM and the destinations receive a c
 
 To return to OK, stop sending the metric and wait 1–2 minutes (missing data is treated as not breaching). No call is placed on recovery.
 
-`contacts.sh` lists recent calls with the connected seconds (the billable part). Calls whose `TALK` exceeds 60 seconds are billed as 2 minutes and are flagged.
+`contacts.sh` lists recent calls with the billable seconds. Amazon Connect voice usage is billed per second on `TOTAL`, which includes the ringing time (`RING`). Telephony is billed per minute, rounded up, on the connected time `TALK`, so calls whose `TALK` exceeds 60 seconds are billed as 2 minutes and are flagged.
 
 ```bash
 ../scripts/contacts.sh        # last 7 days by default
 ../scripts/contacts.sh 30     # specify the number of days
-# INITIATED            CONNECTED    DISCONNECTED   RING   TALK  REASON
-# 2026-11-02 03:58:41 03:59:03     03:59:34         23     31  CONTACT_FLOW_DISCONNECT
+# INITIATED            CONNECTED    DISCONNECTED   RING   TALK  TOTAL  REASON
+# 2026-11-02 03:58:41 03:59:03     03:59:34         23     31     54  CONTACT_FLOW_DISCONNECT
 ```
 
 Calls will not arrive if the recipient has blocked international calls on their carrier.
