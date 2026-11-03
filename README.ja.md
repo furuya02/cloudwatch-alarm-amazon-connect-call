@@ -37,7 +37,7 @@ CloudWatch Alarm が ALARM になったとき、Amazon Connect から携帯電�
 ├── scripts/
 │   ├── alarm.sh            # 検証用メトリクスを送って ALARM にする
 │   ├── status.sh           # Alarm の状態と Lambda のログを表示する
-│   └── contacts.sh         # 直近の発信を一覧し、接続後の秒数（通話料の対象）を表示する
+│   └── contacts.sh         # 直近の発信を一覧し、課金対象の秒数（TOTAL と TALK）を表示する
 └── docs/architecture.png
 ```
 
@@ -125,13 +125,13 @@ pnpm cdk deploy -c flow=message
 
 OK に戻すには、メトリクスの送信を止めて 1〜2 分待ちます（欠損データを OK 扱いにしています）。OK への復帰では発信しません。
 
-直近の発信と、接続後の秒数（通話料の対象）は `contacts.sh` で確認できます。`TALK` が 60 秒を超えると 2 分分の課金になるので目印が付きます。
+直近の発信と、課金される秒数は `contacts.sh` で確認できます。Connect の音声利用料は秒単位で、呼び出し中（`RING`）も含めた `TOTAL` が対象です。通話料は接続後の `TALK` を 1 分単位で切り上げるので、`TALK` が 60 秒を超えると 2 分分になり、目印が付きます。
 
 ```bash
 ../scripts/contacts.sh        # 既定は直近 7 日
 ../scripts/contacts.sh 30     # 日数を指定
-# INITIATED            CONNECTED    DISCONNECTED   RING   TALK  REASON
-# 2026-11-02 03:58:41 03:59:03     03:59:34         23     31  CONTACT_FLOW_DISCONNECT
+# INITIATED            CONNECTED    DISCONNECTED   RING   TALK  TOTAL  REASON
+# 2026-11-02 03:58:41 03:59:03     03:59:34         23     31     54  CONTACT_FLOW_DISCONNECT
 ```
 
 着信側で国際電話の着信拒否を有効にしていると着信しません。
